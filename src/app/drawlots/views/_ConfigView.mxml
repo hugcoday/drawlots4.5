@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		title="{resourceManager.getString('mc','home.config')}"
+		xmlns:dao="com.groupcotton.dao.*" 
+		actionBarVisible="false">
+	<fx:Declarations>
+		<dao:BaseDAO id="baseDAO"  />
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			private function getData():void{
+				this.parentApplication.defaultData =  txt.text.split("\r");
+				navigator.popView();
+			}
+		]]>
+	</fx:Script>
+	<s:HGroup width="100%" horizontalAlign="center" gap="20">
+		<s:Image source="assets/operate/list_88_88.png" />
+		<s:Image source="assets/operate/save_88_88.png"  />
+	</s:HGroup>
+	
+	
+	<s:Panel  title="{resourceManager.getString('mc','config.info')}"
+			  width="75%" height="75%" 
+			  horizontalCenter="0" verticalCenter="0"  backgroundAlpha="0">
+		<s:VGroup left="0" right="0" top="0" bottom="0" horizontalAlign="center">
+			
+			<s:TextArea id="txt" width="100%" height="100%"  />
+			<s:Button  label="确认" click="getData()" />
+		</s:VGroup>
+	</s:Panel>
+</s:View>

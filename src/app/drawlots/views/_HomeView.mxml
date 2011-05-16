@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		title="{resourceManager.getString('mc','home.title')}" 
+		initialize="init()"
+	    actionBarVisible="false"
+		xmlns:dao="com.groupcotton.dao.*" 
+		xmlns:layout="com.groupcotton.layout.*">
+	<s:layout>
+		<s:VerticalLayout gap="10" horizontalAlign="center" />
+	</s:layout>
+	
+	<!--	actionBarVisible="false" -->
+	<fx:Declarations>
+		<s:Rotate3D id="leftRightRotate180" duration="800" 
+					autoCenterTransform="true"
+					angleYFrom="0" angleYTo="180" />
+		
+		<s:Rotate3D id="leftRightRotate360" duration="800" 
+					autoCenterTransform="true"
+					angleYFrom="180" angleYTo="360" />
+		
+	
+		
+		<dao:BaseDAO id="nodeSrv"  />
+		
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import app.drawlots.renderers.nodeRenderer;
+			
+			import com.groupcotton.model.node;
+			import com.groupcotton.utils.StaticDispatcher;
+			
+			import spark.components.BorderContainer;
+			import spark.components.Image;
+			import spark.components.Label;
+			
+			
+			
+			
+			
+			/* 是否旋转过  */
+			private  var  hasRotate:Object;
+			/* 当前选中节点 */
+			private var curObj:Object;
+			/* 是否再玩一次 */
+			private var oneMore:Boolean = false;
+			/* 允许修改的数据备份 */
+			private var DataBAK:Array =new Array();
+			/* 是否开始 */
+			private var isStart:Boolean = false;
+			
+			
+			/* 初始化数据 抓阄内容 */
+			public function init():void{
+				/* 再玩一次 */
+				if(oneMore){
+					initContent();
+					return;
+				}
+				/* 初次加载 */
+				if(!this.parentApplication.isNeedLoad){
+					StaticDispatcher.addEventListener("isOpened",refresh);
+					return;
+				}
+				/* 初次加载 */
+				if(this.parentApplication.isNeedLoad){
+					initContent();
+				}
+			}
+			//启动时，默认数据库连接完成后加载
+			private function refresh(event:Event):void{
+				initContent();
+			}
+			
+			// 界面以及数据初始化
+			public function initContent():void{
+				var curNode:node = nodeSrv.getItem(1);
+				this.parentApplication.defaultData = curNode.content.split('\n');
+				if(this.parentApplication.defaultData!=null){
+					DataBAK = new Array();
+					/* 清除所有节点 */
+					second.removeAllElements();
+					/* 是否旋转  */
+					hasRotate = new Object();
+					if(this.parentApplication.defaultData.length<=5){
+						second.width= this.parentApplication.defaultData.length*98;
+					}else{
+						second.width=4*98;
+					}
+					/* 初始化数据 */
+					refreshData();
+					
+					for(var i:Number=0;i<DataBAK.length;i++){
+						addPoint(addNode(),DataBAK[i]);
+					}
+				}
+			}
+			/* 重新加载数据 */
+			public function refreshData():void{
+				for(var j:Number=0;j< this.parentApplication.defaultData.length;j++){
+					DataBAK.push(this.parentApplication.defaultData[j]);
+				}
+			}
+			/* 开始 */
+			public function doPlay(evt:Event):void{
+				if(!isStart)return;
+				curObj = evt.currentTarget;
+				if(hasRotate.hasOwnProperty(curObj.id)) return;
+				leftRightRotate360.play([curObj]);
+				hasRotate[curObj.id]=true;
+				setTimeout(getResult,600);
+				
+				
+			}
+			
+			/* 随机结果 */
+			private function getResult():void{
+				var max:Number = DataBAK.length;
+				//var label:Label = new Label();
+				var hitNum:Number = randRange(max);
+				//label.text = DataBAK[hitNum];
+				curObj.nodeLabel.text = DataBAK[hitNum]
+				DataBAK.splice(hitNum,1)
+				
+				//curObj.addElement(label);
+			}
+			
+			/* 初始化 增加节点 内容 */
+			private function addPoint(obj:Object,txt:String):void{
+				/* var img:Image = new Image();
+				img.source="assets/flag_red.png"; */
+				//curObj.addElement(img);
+				
+				//var label:Label = new Label();
+				//label.text = txt;
+				//obj.addElement(label);
+				obj.nodeLabel.text = txt;
+				//loader.load("assets/orange88_88.png");
+				//curObj.setStyle("backgroundImage",'assets/88_88.png');
+			}
+			
+			
+			/* 开始 play*/
+			public function doStart(obj:Object):void{
+				isStart = true;
+				if(oneMore){
+					init();
+				}
+				
+				
+				//配置节点
+				afterConfig();
+				
+				/* 等待1秒旋转 */
+				setTimeout(circleRotate,1000);
+				
+				setTimeout(doChangeLabel,3000);
+				
+			}
+			
+			/* 改变按钮状态 */
+			public function doChangeLabel():void
+			{
+				if(!oneMore){
+					startButton.label = resourceManager.getString('mc','home.oneMoreAgain');
+					oneMore= true;
+				}
+			}
+			
+			/* 开始整体旋转 */
+			private function circleRotate():void{
+				 
+			}
+			
+			/* 节点 计数 */
+			private var i:Number = 0;
+			/* 动态增加节点 初始化 */
+			public function addNode():nodeRenderer{
+				var nodeObj:nodeRenderer = new nodeRenderer();
+				nodeObj.id="cell_"+i;
+				second.addElement(nodeObj);
+				nodeObj.addEventListener(MouseEvent.CLICK,doPlay);
+				i++;
+				return nodeObj;
+			}
+			
+			/* 随机数 */
+			private function randRange(max:Number):Number {
+				var randomNum:Number = Math.floor(Math.random() *max) ;
+				return randomNum;
+			} 
+			
+			/* 移除子内容 */
+			private function removeall(obj:nodeRenderer):void{
+				obj.nodeLabel.text="";//removeAllElements();
+			}
+			
+			/* 配置结果 */
+			private function afterConfig():void{
+				for(var i:Number=0;i<second.numElements;i++){
+					var cell:nodeRenderer =  second.getElementAt(i) as nodeRenderer ;
+					leftRightRotate180.play([cell]);
+					removeall(cell);
+				}
+			}
+			
+			/* 动态换背景图片 */
+			protected function loader_completeHandler(event:Event):void
+			{
+				curObj.setStyle("backgroundImage", event.target.content);
+			}
+			/* 转到配置页面 */
+			private function doConfig():void{
+				navigator.pushView(_ConfigView);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:actionContent>
+		<s:Button id="toconfig" label="{resourceManager.getString('mc','home.config')}"  click="doConfig()"/>
+	</s:actionContent>
+	
+	<s:VGroup verticalAlign="middle" horizontalAlign="center" width="100%" height="66%" >
+		<s:Group  id="second"      height="33%" >
+			<s:layout>
+				<layout:FlowLayout1/>
+			</s:layout>
+		</s:Group>
+	</s:VGroup>
+	
+	
+	<s:HGroup id="third" width="100%" height="34%" horizontalAlign="right" verticalAlign="middle" >
+		<s:Button id="startButton" label="{resourceManager.getString('mc','home.start')}" click="doStart(second)" />
+	</s:HGroup>
+	
+	
+	
+</s:View>
