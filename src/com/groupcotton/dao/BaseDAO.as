@@ -2,7 +2,7 @@ package com.groupcotton.dao
 {
 	import flash.data.SQLStatement;
 	
-	import com.groupcotton.model.node;
+	import app.drawlots.model.node;
 	
 	import mx.collections.ArrayCollection;
 	

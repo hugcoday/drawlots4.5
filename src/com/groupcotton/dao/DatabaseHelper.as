@@ -12,7 +12,7 @@ package com.groupcotton.dao
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	
-	import com.groupcotton.model.node;
+	import app.drawlots.model.node;
 	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.AsyncResponder;
@@ -98,7 +98,7 @@ package com.groupcotton.dao
 		{
 			deleteData();
 			
-			var notes:ArrayCollection = com.groupcotton.model.node as ArrayCollection;
+			var notes:ArrayCollection = app.drawlots.model.node as ArrayCollection;
 			if (notes == null || notes.length < 1)
 			{
 				dispatchEvent(new SyncEvent(SyncEvent.FAILURE, "Invalid XML document"));

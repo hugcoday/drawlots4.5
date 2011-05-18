@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
-		xmlns:s="library://ns.adobe.com/flex/spark"
-		title="{resourceManager.getString('mc','about.title')}">
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="{resourceManager.getString('mc','history.title')}">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -13,7 +12,8 @@
 		]]>
 	</fx:Script>
 	<s:actionContent>
-		<s:Button label="{resourceManager.getString('mc','home.return')}" click="returnFirst()"/>
+		<s:Button label="{resourceManager.getString('mc','home.return')}" click="returnFirst()" />
 	</s:actionContent>
 	
+	 
 </s:View>

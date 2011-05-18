@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TabbedViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
 								  xmlns:s="library://ns.adobe.com/flex/spark" 
 								  applicationDPI="160"
 								  xmlns:dao="com.groupcotton.dao.*" 
+								  firstView="app.drawlots.views._HomeView"
 								  applicationComplete="applicationCompleteHandler(event)">
-	<s:ViewNavigator label="抓阄" width="100%" height="100%" firstView="app.drawlots.views._HomeView"/>
-	<s:ViewNavigator label="配置" width="100%" height="100%" firstView="app.drawlots.views._ConfigView"/>
-	<s:ViewNavigator label="关于" width="100%" height="100%" firstView="app.drawlots.views._AboutView"/>
-	<fx:Declarations>
+	<!--<s:ViewNavigator id="home" label="{resourceManager.getString('mc','home.title')}" width="100%" height="100%" firstView="app.drawlots.views._HomeView" />
+	<s:ViewNavigator id="config" label="{resourceManager.getString('mc','home.config')}" width="100%" height="100%" firstView="app.drawlots.views._ConfigView"/>
+	<s:ViewNavigator id="about" label="{resourceManager.getString('mc','home.about')}" width="100%" height="100%" firstView="app.drawlots.views._AboutView"/>
+-->	<fx:Declarations>
 		<dao:BaseDAO id="nodeSrv"  />
 	</fx:Declarations>
 	
@@ -17,7 +18,7 @@
 	<fx:Script>
 		<![CDATA[
 			import com.groupcotton.dao.DatabaseHelper;
-			import com.groupcotton.model.node;
+			import app.drawlots.model.node;
 			import com.groupcotton.utils.StaticDispatcher;
 			
 			import mx.events.FlexEvent;
@@ -29,6 +30,7 @@
 			private function init():void{
 				var curNode:node = nodeSrv.getItem(1);
 				defaultData = curNode.content.split('\n');
+				
 			}
 			
 			protected function applicationCompleteHandler(event:FlexEvent):void
@@ -44,4 +46,4 @@
 		]]>
 	</fx:Script>
 	
-</s:TabbedViewNavigatorApplication>
+</s:ViewNavigatorApplication>

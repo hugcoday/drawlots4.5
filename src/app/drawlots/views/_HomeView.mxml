@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" 
-		title="{resourceManager.getString('mc','home.title')}" 
-		initialize="init()"
-	    actionBarVisible="false"
-		xmlns:dao="com.groupcotton.dao.*" 
-		xmlns:layout="com.groupcotton.layout.*">
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:dao="com.groupcotton.dao.*"
+		xmlns:layout="com.groupcotton.layout.*"
+		initialize="init()" title="{resourceManager.getString('mc','home.title')}">
 	<s:layout>
-		<s:VerticalLayout gap="10" horizontalAlign="center" />
+		<s:VerticalLayout gap="10" horizontalAlign="center"/>
 	</s:layout>
 	
 	<!--	actionBarVisible="false" -->
 	<fx:Declarations>
-		<s:Rotate3D id="leftRightRotate180" duration="800" 
-					autoCenterTransform="true"
-					angleYFrom="0" angleYTo="180" />
+		<s:Rotate3D id="leftRightRotate180" angleYFrom="0" angleYTo="180" autoCenterTransform="true"
+					duration="800"/>
 		
-		<s:Rotate3D id="leftRightRotate360" duration="800" 
-					autoCenterTransform="true"
-					angleYFrom="180" angleYTo="360" />
+		<s:Rotate3D id="leftRightRotate360" angleYFrom="180" angleYTo="360"
+					autoCenterTransform="true" duration="800"/>
 		
 	
 		
-		<dao:BaseDAO id="nodeSrv"  />
+		<dao:BaseDAO id="nodeSrv"/>
 		
 		
 	</fx:Declarations>
@@ -30,7 +26,7 @@
 		<![CDATA[
 			import app.drawlots.renderers.nodeRenderer;
 			
-			import com.groupcotton.model.node;
+			import app.drawlots.model.node;
 			import com.groupcotton.utils.StaticDispatcher;
 			
 			import spark.components.BorderContainer;
@@ -55,6 +51,7 @@
 			
 			/* 初始化数据 抓阄内容 */
 			public function init():void{
+				
 				/* 再玩一次 */
 				if(oneMore){
 					initContent();
@@ -63,13 +60,16 @@
 				/* 初次加载 */
 				if(!this.parentApplication.isNeedLoad){
 					StaticDispatcher.addEventListener("isOpened",refresh);
+					this.parentApplication.isNeedLoad = true;
 					return;
 				}
 				/* 初次加载 */
 				if(this.parentApplication.isNeedLoad){
 					initContent();
+					return;
 				}
 			}
+			
 			//启动时，默认数据库连接完成后加载
 			private function refresh(event:Event):void{
 				initContent();
@@ -165,7 +165,7 @@
 			public function doChangeLabel():void
 			{
 				if(!oneMore){
-					startButton.label = resourceManager.getString('mc','home.oneMoreAgain');
+					toStart.label = resourceManager.getString('mc','home.oneMoreAgain');
 					oneMore= true;
 				}
 			}
@@ -216,15 +216,26 @@
 			private function doConfig():void{
 				navigator.pushView(_ConfigView);
 			}
+			
+			/* 转到历史录入结果 */
+			private function doHistory():void{
+				navigator.pushView(_HistoryView);
+			}
+			
 		]]>
 	</fx:Script>
-	
+	 
 	<s:actionContent>
-		<s:Button id="toconfig" label="{resourceManager.getString('mc','home.config')}"  click="doConfig()"/>
+		<s:Button id="toStart" label="{resourceManager.getString('mc','home.start')}"
+				  click="doStart(second)" color="yellow"/>
+		<s:Button id="toHistory" label="{resourceManager.getString('mc','home.history')}"
+				  click="doHistory()"/>
+		<s:Button id="toconfig" label="{resourceManager.getString('mc','home.config')}"
+				  click="doConfig()"/>
 	</s:actionContent>
 	
-	<s:VGroup verticalAlign="middle" horizontalAlign="center" width="100%" height="66%" >
-		<s:Group  id="second"      height="33%" >
+	<s:VGroup width="100%" height="66%" horizontalAlign="center" verticalAlign="middle">
+		<s:Group id="second" height="33%">
 			<s:layout>
 				<layout:FlowLayout1/>
 			</s:layout>
@@ -232,8 +243,9 @@
 	</s:VGroup>
 	
 	
-	<s:HGroup id="third" width="100%" height="34%" horizontalAlign="right" verticalAlign="middle" >
-		<s:Button id="startButton" label="{resourceManager.getString('mc','home.start')}" click="doStart(second)" />
+	<s:HGroup id="third" width="100%" height="34%" horizontalAlign="right" verticalAlign="middle">
+		<!--<s:Button id="startButton" label="{resourceManager.getString('mc','home.start')}"
+				  click="doStart(second)"/>-->
 	</s:HGroup>
 	
 	
