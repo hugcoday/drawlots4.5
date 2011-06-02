@@ -25,11 +25,11 @@
 			
 			public  var isNeedLoad:Boolean = false;
 			
-			public var defaultData:Array = ["洗碗"];
+			public var defaultData:Array = null;
 			
 			private function init():void{
 				var curNode:node = nodeSrv.getItem(1);
-				defaultData = curNode.content.split('\n');
+				defaultData = curNode.content.split('\r');
 				
 			}
 			

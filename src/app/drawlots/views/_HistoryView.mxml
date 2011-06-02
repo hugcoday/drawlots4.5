@@ -1,19 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		xmlns:s="library://ns.adobe.com/flex/spark" title="{resourceManager.getString('mc','history.title')}">
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:dao="com.groupcotton.dao.*"
+	    initialize="initialize_handler()"
+		title="{resourceManager.getString('mc','history.title')}">
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<dao:BaseDAO id="baseDAO"/>
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			public var pattern:RegExp = /\r/gi; 
+			
 			private function returnFirst():void{
 				navigator.popView();
 			}
+			
+			private function doNew():void{
+				navigator.pushView(_NewView);
+			}
+			
+			private function initialize_handler():void{
+				var result:ArrayCollection = baseDAO.findByName("");
+				mainList.dataProvider = result;
+			}
+			
+			public function doPlay(content:String):void{
+				this.parentApplication.defaultData = content.split("\r");
+				returnFirst();
+			}
+			 
+			 
+			
 		]]>
 	</fx:Script>
+	
 	<s:actionContent>
+		<s:Button label="{resourceManager.getString('mc','history.new')}" click="doNew()" />
 		<s:Button label="{resourceManager.getString('mc','home.return')}" click="returnFirst()" />
 	</s:actionContent>
+	
+	<s:List id="mainList" width="100%" height="100%">
+		<s:itemRenderer>
+			<fx:Component>
+				<s:LabelItemRenderer click="{outerDocument.doPlay(data.content)}" 
+									 label="{data.content.replace(outerDocument.pattern, ' - ')}" />
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
 	
 	 
 </s:View>

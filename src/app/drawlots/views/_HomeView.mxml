@@ -18,7 +18,7 @@
 		
 	
 		
-		<dao:BaseDAO id="nodeSrv"/>
+		<dao:BaseDAO id="baseDAO"/>
 		
 		
 	</fx:Declarations>
@@ -77,8 +77,12 @@
 			
 			// 界面以及数据初始化
 			public function initContent():void{
-				var curNode:node = nodeSrv.getItem(1);
-				this.parentApplication.defaultData = curNode.content.split('\n');
+				
+				if(this.parentApplication.defaultData == null){
+					var curNode:node = baseDAO.getItem(1);
+					this.parentApplication.defaultData = curNode.content.split('\n');
+				}
+				
 				if(this.parentApplication.defaultData!=null){
 					DataBAK = new Array();
 					/* 清除所有节点 */
@@ -214,7 +218,7 @@
 			}
 			/* 转到配置页面 */
 			private function doConfig():void{
-				navigator.pushView(_ConfigView);
+				navigator.pushView(_NewView);
 			}
 			
 			/* 转到历史录入结果 */
@@ -222,6 +226,10 @@
 				navigator.pushView(_HistoryView);
 			}
 			
+			private function doAbout():void
+			{
+				navigator.pushView(_AboutView);
+			}
 		]]>
 	</fx:Script>
 	 
@@ -230,8 +238,10 @@
 				  click="doStart(second)" color="yellow"/>
 		<s:Button id="toHistory" label="{resourceManager.getString('mc','home.history')}"
 				  click="doHistory()"/>
-		<s:Button id="toconfig" label="{resourceManager.getString('mc','home.config')}"
-				  click="doConfig()"/>
+		<s:Button id="toAbout" label="{resourceManager.getString('mc','home.about')}"
+				  click="doAbout()"/>
+	<!--	<s:Button id="toconfig" label="{resourceManager.getString('mc','home.config')}"
+				  click="doConfig()"/>-->
 	</s:actionContent>
 	
 	<s:VGroup width="100%" height="66%" horizontalAlign="center" verticalAlign="middle">

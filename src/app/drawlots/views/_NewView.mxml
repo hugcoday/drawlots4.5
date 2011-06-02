@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:dao="com.groupcotton.dao.*"
+		title="{resourceManager.getString('mc','home.config')}">
+	<fx:Declarations>
+		<dao:BaseDAO id="baseDAO"/>
+		<s:DateTimeFormatter id="dateFormats" dateTimePattern="YYYY-MM-DD HH:NN:SS"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import app.drawlots.model.node;
+			
+			public var currentID:int = 0;
+			
+			private function getData():void{
+				this.parentApplication.defaultData =  txt.text.split("\r");
+				navigator.tabIndex=0;
+				
+			}
+			
+			/* 保存数据 */
+			private function insertData():void{
+				var result:Boolean = true;
+				if(txt.text == ""){
+					return;
+				} 
+				/* 新建对象存储数据  */
+				 
+				var _node:node = new node();
+				_node.id=baseDAO.getMaxID()+1;
+				_node.time = dateFormats.format(new Date());
+				_node.content = txt.text;
+				
+				if(currentID==0){
+					currentID = _node.id;
+					baseDAO.create(_node);
+				}else{
+					_node.id = currentID
+					baseDAO.update(_node);
+					
+				}
+				doPlay(_node.content);
+			}
+			
+			private function doPlay(content:String):void{
+				this.parentApplication.defaultData = content.split("\r");
+				returnFirst()
+			}
+			
+			/* 新建节点  */
+			private function newData():void{
+				currentID=0;
+				txt.text="";
+			}
+			
+			/* 返回 */
+			private function returnFirst():void{
+				navigator.popToFirstView();
+			}
+			
+			
+		]]>
+	</fx:Script>
+<s:actionContent>
+
+	<s:Button label="{resourceManager.getString('mc','home.return')}" click="returnFirst()" />
+</s:actionContent>
+	
+	<s:Panel width="100%" height="100%" backgroundAlpha="0" horizontalCenter="0"
+			 title="{resourceManager.getString('mc','config.info')}" verticalCenter="0">
+		<s:VGroup left="0" right="0" top="0" bottom="0" horizontalAlign="center">
+			
+			<s:TextArea id="txt" width="100%" height="100%"/>
+			<s:HGroup width="100%" height="25%" bottom="0" horizontalAlign="center">
+				<s:Button label="{resourceManager.getString('mc','config.new')}" click="newData()" width="33%"/>
+				<s:Button label="{resourceManager.getString('mc','config.save')}" click="insertData()"  width="33%"/>
+				<s:Button label="{resourceManager.getString('mc','config.confirm')}" click="getData()"  width="33%"/>
+			</s:HGroup>
+		</s:VGroup>
+	</s:Panel>
+	
+	
+</s:View>
