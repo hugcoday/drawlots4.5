@@ -80,7 +80,7 @@
 				
 				if(this.parentApplication.defaultData == null){
 					var curNode:node = baseDAO.getItem(1);
-					this.parentApplication.defaultData = curNode.content.split('\n');
+					this.parentApplication.defaultData = curNode.content.split('\r');
 				}
 				
 				if(this.parentApplication.defaultData!=null){
